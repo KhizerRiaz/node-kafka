@@ -2,15 +2,30 @@ const Kafka = require("node-rdkafka");
 // read the KAFKA Brokers and KAFKA_TOPIC values from the local file config.js
 const externalConfig = require('./config');
  
+const messageData = {
+    room: "room1",
+    author: "Chaand",
+    message: "Hey",
+    time:
+      new Date(Date.now()).getHours() +
+      ":" +
+      new Date(Date.now()).getMinutes()+":" + new Date(Date.now()).getSeconds(),
+    email:"Chaand@whatever"
+  };
  
 // function to generate a message
-const generateMessage = i => new Buffer.from(`Generated a happy message - number ${i}`);
+//const generateMessage = i => new Buffer.from(`Generated a happy message - number ${i}`);
+const generateMessage =()=> new Buffer.from(JSON.stringify(messageData));
  
-function generateAndProduceMessages(arg) {
-    for (var i = 0; i < messageBatchSize; i++) {
-        producer.produce(topic, -1, generateMessage(i), i)
-    }
-    console.log(`producer ${arg.name} is done producing messages to Kafka Topic ${topic}.`)
+// function generateAndProduceMessages(arg) {
+//     for (var i = 0; i < messageBatchSize; i++) {
+//         producer.produce(topic, -1, generateMessage(i), i)
+//     }
+//     console.log(`producer ${arg.name} is done producing messages to Kafka Topic ${topic}.`)
+// }
+function generateAndProduceMessages(messageData){
+    producer.produce(topic,-1,generateMessage());
+
 }
  
 // construct a Kafka Configuration object understood by the node-rdkafka library
@@ -34,7 +49,7 @@ function prepareProducer(producer) {
     // event handler attached to the Kafka Producer to handle the ready event that is emitted when the Producer has connected sucessfully to the Kafka Cluster
     producer.on("ready", function (arg) {
         console.log(`Producer connection to Kafka Cluster is ready; message production starts now`)
-        generateAndProduceMessages(arg);
+        generateAndProduceMessages(messageData);
         // after 10 seconds, disconnect the producer from the Kafka Cluster
         setTimeout(() => producer.disconnect(), 10000);
     });
