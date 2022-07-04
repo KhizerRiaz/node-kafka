@@ -19,7 +19,9 @@ var stream = new Kafka.KafkaConsumer.createReadStream(kafkaConf, { "auto.offset.
 });
  
 stream.on('data', function (message) {
-    console.log(`Consumed message on Stream: ${message.value.toString()}`);
+    //console.log(`Consumed message on Stream: ${message.value.toString()}`);
+    console.log(message.value.toString());
+    
     // the structure of the messages is as follows:
     //   {
     //     value: Buffer.from('hi'), // message contents as a Buffer
@@ -40,6 +42,6 @@ stream.consumer.on("disconnected", function (arg) {
 });
  
 // automatically disconnect the consumer after 30 seconds
-setTimeout(function () {
-    stream.consumer.disconnect();
-}, 30000)
+// setTimeout(function () {
+//     stream.consumer.disconnect();
+// }, 30000)
